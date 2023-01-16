@@ -53,6 +53,8 @@ public class PersonaController {
         }
         // update currentUser object data with user object data
         currentUser.get().setNombre(user.getNombre());
+        currentUser.get().setProfesion(user.getProfesion());
+        currentUser.get().setInfo(user.getInfo());
         // save currentUser object
         personaRepository.saveAndFlush(currentUser.get());
         //return ResponseEntity object
