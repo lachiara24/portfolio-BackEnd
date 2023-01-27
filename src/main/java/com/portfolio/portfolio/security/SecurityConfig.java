@@ -37,24 +37,26 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain appSecurity(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(authEntryPoint)
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
+        http.cors().and().csrf().disable()
+//                .exceptionHandling()
+//                .authenticationEntryPoint(authEntryPoint)
+//                .and()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+                .authorizeHttpRequests()
                     .requestMatchers("/api/auth/**").permitAll()
+//                .requestMatchers("/api/persona/**").permitAll()
                     .requestMatchers(HttpMethod.GET,"/api/**").permitAll()
 //                    .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
 //                    .requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
 //                    .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
-                .anyRequest()
-                .authenticated()
+                .anyRequest().authenticated()
                 .and()
-                .httpBasic();
+                .exceptionHandling().authenticationEntryPoint(authEntryPoint)
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//                .httpBasic();
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

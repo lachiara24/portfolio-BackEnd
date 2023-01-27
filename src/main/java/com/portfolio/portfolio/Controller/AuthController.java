@@ -1,7 +1,9 @@
 package com.portfolio.portfolio.Controller;
 
+import com.portfolio.portfolio.Model.Persona;
 import com.portfolio.portfolio.Model.Role;
 import com.portfolio.portfolio.Model.UserEntity;
+import com.portfolio.portfolio.Repository.PersonaRepository;
 import com.portfolio.portfolio.Repository.RoleRepository;
 import com.portfolio.portfolio.Repository.UserRepository;
 import com.portfolio.portfolio.dto.AuthResponseDto;
@@ -23,9 +25,10 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.Collections;
+import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:5000")
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -36,17 +39,21 @@ public class AuthController {
 
     private JwtGenerator jwtGenerator;
 
+    private PersonaRepository personaRepository;
+
     @Autowired
     public AuthController(AuthenticationManager authenticationManager,
                           UserRepository userRepository,
                           RoleRepository roleRepository,
                           PasswordEncoder passwordEncoder,
-                          JwtGenerator jwtGenerator) {
+                          JwtGenerator jwtGenerator,
+                          PersonaRepository personaRepository) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtGenerator = jwtGenerator;
+        this.personaRepository = personaRepository;
     }
 
     @PostMapping("/register")
@@ -64,6 +71,8 @@ public class AuthController {
         user.setRoles(Collections.singletonList(roles));
 
         userRepository.save(user);
+        Persona persona = new Persona(user.getUsername(), user);
+        personaRepository.save(persona);
 
         return new ResponseEntity<String>(HttpStatus.CREATED);
     }
@@ -76,7 +85,9 @@ public class AuthController {
                         loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generateToken(authentication);
-        return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
+        // busco el usuario si existe
+        Optional<UserEntity> user = userRepository.findByUsername(authentication.getName());
+        return new ResponseEntity<>(new AuthResponseDto(token, authentication.getName(), authentication.getAuthorities(), user.get().getId()), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/username", method = RequestMethod.GET)

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:5000")
 @RequestMapping("/api/persona")
 public class ExperienciaController {
 
@@ -39,10 +39,9 @@ public class ExperienciaController {
     }
 
     // Obtener experiencia por id
-    @GetMapping("/{personaId}/experiencia/{id}")
-    public ResponseEntity<Experiencia> getExperienciaById(@PathVariable("id") final Long id,
-                                            @PathVariable("personaId") final Long personaId) {
-        Optional<Experiencia> experiencia = experienciaRepository.findByIdAndPersonaId(id, personaId);
+    @GetMapping("/experiencia/{id}")
+    public ResponseEntity<Experiencia> getExperienciaById(@PathVariable("id") final Long id) {
+        Optional<Experiencia> experiencia = experienciaRepository.findById(id);
         if (!experiencia.isPresent()) {
             return new ResponseEntity<Experiencia>(HttpStatus.NOT_FOUND);
         }
@@ -65,15 +64,10 @@ public class ExperienciaController {
     }
 
     // editar experiencia
-    @PutMapping(value = "/{personaId}/experiencia/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Experiencia> updateUser(@PathVariable("personaId") final Long personaId,
-                                           @PathVariable("id") final Long id,
+    @PutMapping(value = "/experiencia/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Experiencia> updateUser(@PathVariable("id") final Long id,
                                            @RequestBody Experiencia experiencia) {
-        // busco si existe el id del persona
-        Optional<Persona> currentUser = personaRepository.findById(personaId);
-        if (!currentUser.isPresent()) {
-            return new ResponseEntity<Experiencia>(HttpStatus.NOT_FOUND);
-        }
+
         // busco si existe el id del experiencia
         Optional<Experiencia> currentExperiencia = experienciaRepository.findById(id);
         if (!currentExperiencia.isPresent()) {

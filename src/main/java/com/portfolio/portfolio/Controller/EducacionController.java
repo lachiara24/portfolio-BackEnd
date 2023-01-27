@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:5000", allowedHeaders = {"Authorization", "Content-Type"})
 @RequestMapping("/api/persona")
 public class EducacionController {
     @Autowired
@@ -38,10 +38,9 @@ public class EducacionController {
     }
 
     // Obtener educacion por id
-    @GetMapping("/{personaId}/educacion/{id}")
-    public ResponseEntity<Educacion> getEducacionById(@PathVariable("id") final Long id,
-                                                          @PathVariable("personaId") final Long personaId) {
-        Optional<Educacion> educacion = educacionRepository.findByIdAndPersonaId(id, personaId);
+    @GetMapping("/educacion/{id}")
+    public ResponseEntity<Educacion> getEducacionById(@PathVariable("id") final Long id) {
+        Optional<Educacion> educacion = educacionRepository.findById(id);
         if (!educacion.isPresent()) {
             return new ResponseEntity<Educacion>(HttpStatus.NOT_FOUND);
         }
@@ -64,15 +63,9 @@ public class EducacionController {
     }
 
     // editar educacion
-    @PutMapping(value = "/{personaId}/educacion/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Educacion> updateUser(@PathVariable("personaId") final Long personaId,
-                                                  @PathVariable("id") final Long id,
+    @PutMapping(value = "/educacion/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Educacion> updateUser(@PathVariable("id") final Long id,
                                                   @RequestBody Educacion educacion) {
-        // busco si existe el id del persona
-        Optional<Persona> currentUser = personaRepository.findById(personaId);
-        if (!currentUser.isPresent()) {
-            return new ResponseEntity<Educacion>(HttpStatus.NOT_FOUND);
-        }
         // busco si existe el id del educacion
         Optional<Educacion> currentEducacion = educacionRepository.findById(id);
         if (!currentEducacion.isPresent()) {

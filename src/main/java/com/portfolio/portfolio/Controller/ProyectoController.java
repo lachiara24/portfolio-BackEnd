@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:5000")
 @RequestMapping("/api/persona")
 public class ProyectoController {
     @Autowired
@@ -38,10 +38,9 @@ public class ProyectoController {
     }
 
     // Obtener proyecto por id
-    @GetMapping("/{personaId}/proyecto/{id}")
-    public ResponseEntity<Proyecto> getProyectoById(@PathVariable("id") final Long id,
-                                                          @PathVariable("personaId") final Long personaId) {
-        Optional<Proyecto> proyecto = proyectoRepository.findByIdAndPersonaId(id, personaId);
+    @GetMapping("/proyecto/{id}")
+    public ResponseEntity<Proyecto> getProyectoById(@PathVariable("id") final Long id) {
+        Optional<Proyecto> proyecto = proyectoRepository.findById(id);
         if (!proyecto.isPresent()) {
             return new ResponseEntity<Proyecto>(HttpStatus.NOT_FOUND);
         }
@@ -64,15 +63,10 @@ public class ProyectoController {
     }
 
     // editar proyecto
-    @PutMapping(value = "/{personaId}/proyecto/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Proyecto> updateUser(@PathVariable("personaId") final Long personaId,
-                                                  @PathVariable("id") final Long id,
+    @PutMapping(value = "/proyecto/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Proyecto> updateUser(@PathVariable("id") final Long id,
                                                   @RequestBody Proyecto proyecto) {
-        // busco si existe el id del persona
-        Optional<Persona> currentUser = personaRepository.findById(personaId);
-        if (!currentUser.isPresent()) {
-            return new ResponseEntity<Proyecto>(HttpStatus.NOT_FOUND);
-        }
+
         // busco si existe el id del proyecto
         Optional<Proyecto> currentProyecto = proyectoRepository.findById(id);
         if (!currentProyecto.isPresent()) {

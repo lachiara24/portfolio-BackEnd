@@ -1,12 +1,15 @@
 package com.portfolio.portfolio.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 public class Persona {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "user_id")
+    private int id;
 
     @Column(name = "nombre")
     private String nombre;
@@ -16,6 +19,36 @@ public class Persona {
 
     @Column(name = "info")
     private String info;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private UserEntity user;
+
+    public Persona() {
+    }
+
+    public Persona(String nombre, UserEntity user) {
+        this.nombre = nombre;
+        this.user = user;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
     public String getProfesion() {
         return profesion;
@@ -33,19 +66,11 @@ public class Persona {
         this.info = info;
     }
 
-    public long getId() {
-        return id;
+    public UserEntity getUser() {
+        return user;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 }

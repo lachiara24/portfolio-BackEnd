@@ -1,7 +1,9 @@
 package com.portfolio.portfolio.Controller;
 
 import com.portfolio.portfolio.Model.Persona;
+import com.portfolio.portfolio.Model.UserEntity;
 import com.portfolio.portfolio.Repository.PersonaRepository;
+import com.portfolio.portfolio.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,12 +14,15 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:5000", allowedHeaders = {"Authorization", "Content-Type"})
 @RequestMapping("/api/persona")
 public class PersonaController {
 
     @Autowired
     private PersonaRepository personaRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/")
     public ResponseEntity<List<Persona>> listAllUsers() {
@@ -42,6 +47,22 @@ public class PersonaController {
             return new ResponseEntity<Persona>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<Persona>(user.get(), HttpStatus.OK);
+    }
+
+    //obtener persona por nombre de usuario
+    @GetMapping("")
+    public ResponseEntity<Persona> getPersonaByUsername (@RequestParam(name = "username") String username) {
+        // busco el usuario si existe
+        Optional<UserEntity> user = userRepository.findByUsername(username);
+        if (!user.isPresent()) {
+            return new ResponseEntity<Persona>(HttpStatus.NOT_FOUND);
+        }
+        // si existe obtengo la persona por el id del user
+        Optional<Persona> persona = personaRepository.findByUserId(user.get().getId());
+        if (!persona.isPresent()) {
+            return new ResponseEntity<Persona>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Persona>(persona.get(), HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
