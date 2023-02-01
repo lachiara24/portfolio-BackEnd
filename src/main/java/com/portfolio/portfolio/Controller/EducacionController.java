@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5000", allowedHeaders = {"Authorization", "Content-Type"})
+@CrossOrigin(origins = {"http://localhost:5000", "http://localhost:4200"}, allowedHeaders = {"Authorization", "Content-Type"})
 @RequestMapping("/api/persona")
 public class EducacionController {
     @Autowired

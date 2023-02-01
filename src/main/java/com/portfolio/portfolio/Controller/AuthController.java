@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5000")
+@CrossOrigin(origins = {"http://localhost:5000", "http://localhost:4200"})
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -71,7 +71,8 @@ public class AuthController {
         user.setRoles(Collections.singletonList(roles));
 
         userRepository.save(user);
-        Persona persona = new Persona(user.getUsername(), user);
+        // creo a la persona con ese usuario
+        Persona persona = new Persona(registerDto.getNombre(), registerDto.getApellido(), user);
         personaRepository.save(persona);
 
         return new ResponseEntity<String>(HttpStatus.CREATED);

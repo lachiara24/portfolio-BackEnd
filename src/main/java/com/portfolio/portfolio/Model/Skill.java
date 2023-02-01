@@ -6,22 +6,20 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-public class Proyecto {
+public class Skill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
+
     @Column(name = "nombre")
     private String nombre;
-    @Column(name = "descripcion")
-    private String descripcion;
-    @Column(name = "link_demo")
-    private String demo;
 
-    @Column(name = "link_repo")
-    private String repo;
+    @Column(name = "porcentaje")
+    private int porcentaje;
 
     @Column(name = "img")
     private String img;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "persona_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -36,11 +34,19 @@ public class Proyecto {
         this.img = img;
     }
 
-    public Long getId() {
+    public Persona getPersona() {
+        return persona;
+    }
+
+    public void setPersona(Persona persona) {
+        this.persona = persona;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -52,35 +58,11 @@ public class Proyecto {
         this.nombre = nombre;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public int getPorcentaje() {
+        return porcentaje;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getDemo() {
-        return demo;
-    }
-
-    public void setDemo(String demo) {
-        this.demo = demo;
-    }
-
-    public String getRepo() {
-        return repo;
-    }
-
-    public void setRepo(String repo) {
-        this.repo = repo;
-    }
-
-    public Persona getPersona() {
-        return persona;
-    }
-
-    public void setPersona(Persona persona) {
-        this.persona = persona;
+    public void setPorcentaje(int porcentaje) {
+        this.porcentaje = porcentaje;
     }
 }

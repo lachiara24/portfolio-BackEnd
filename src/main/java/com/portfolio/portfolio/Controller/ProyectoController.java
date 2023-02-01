@@ -4,6 +4,7 @@ import com.portfolio.portfolio.Model.Proyecto;
 import com.portfolio.portfolio.Model.Persona;
 import com.portfolio.portfolio.Repository.ProyectoRepository;
 import com.portfolio.portfolio.Repository.PersonaRepository;
+import com.portfolio.portfolio.dto.PhotosDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5000")
+@CrossOrigin(origins = {"http://localhost:5000", "http://localhost:4200"})
 @RequestMapping("/api/persona")
 public class ProyectoController {
     @Autowired
@@ -75,12 +76,34 @@ public class ProyectoController {
         // actualizo proyecto
         currentProyecto.get().setNombre(proyecto.getNombre());
         currentProyecto.get().setDescripcion(proyecto.getDescripcion());
-        currentProyecto.get().setLink(proyecto.getLink());
+        currentProyecto.get().setDemo(proyecto.getDemo());
+        currentProyecto.get().setRepo(proyecto.getRepo());
+        currentProyecto.get().setImg(proyecto.getImg());
         // guardo proyecto actualizado
         proyectoRepository.saveAndFlush(currentProyecto.get());
         //return ResponseEntity object
         return new ResponseEntity<Proyecto>(currentProyecto.get(), HttpStatus.OK);
     }
+
+    /// editar foto de proyecto
+
+    @PutMapping(value = "/proyecto/{id}/photo", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Proyecto> updatePhoto(@PathVariable("id") final Long id,
+                                             @RequestBody PhotosDto img) {
+
+        // busco si existe el id del proyecto
+        Optional<Proyecto> currentProyecto = proyectoRepository.findById(id);
+        if (!currentProyecto.isPresent()) {
+            return new ResponseEntity<Proyecto>(HttpStatus.NOT_FOUND);
+        }
+        // actualizo proyecto
+        currentProyecto.get().setImg(img.getImg());
+        // guardo proyecto actualizado
+        proyectoRepository.saveAndFlush(currentProyecto.get());
+        //return ResponseEntity object
+        return new ResponseEntity<Proyecto>(currentProyecto.get(), HttpStatus.OK);
+    }
+
 
     // borrar proyecto
     @DeleteMapping("/{personaId}/proyecto/{id}")

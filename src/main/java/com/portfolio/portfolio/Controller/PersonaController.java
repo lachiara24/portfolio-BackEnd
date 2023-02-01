@@ -4,6 +4,7 @@ import com.portfolio.portfolio.Model.Persona;
 import com.portfolio.portfolio.Model.UserEntity;
 import com.portfolio.portfolio.Repository.PersonaRepository;
 import com.portfolio.portfolio.Repository.UserRepository;
+import com.portfolio.portfolio.dto.PhotosDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5000", allowedHeaders = {"Authorization", "Content-Type"})
+@CrossOrigin(origins = {"http://localhost:5000", "http://localhost:4200"}, allowedHeaders = {"Authorization", "Content-Type"})
 @RequestMapping("/api/persona")
 public class PersonaController {
 
@@ -74,8 +75,28 @@ public class PersonaController {
         }
         // update currentUser object data with user object data
         currentUser.get().setNombre(user.getNombre());
+        currentUser.get().setApellido(user.getApellido());
         currentUser.get().setProfesion(user.getProfesion());
         currentUser.get().setInfo(user.getInfo());
+        currentUser.get().setGithub(user.getGithub());
+        currentUser.get().setLinkedin(user.getLinkedin());
+        // save currentUser object
+        personaRepository.saveAndFlush(currentUser.get());
+        //return ResponseEntity object
+        return new ResponseEntity<Persona>(currentUser.get(), HttpStatus.OK);
+    }
+
+    /// actualizar fotos
+    @PutMapping(value = "/{id}/photos", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Persona> updatePhotos(@PathVariable("id") final Long id, @RequestBody PhotosDto photos) {
+        // fetch user based on id and set it to currentUser object of type Persona
+        Optional<Persona> currentUser = personaRepository.findById(id);
+        if (!currentUser.isPresent()) {
+            return new ResponseEntity<Persona>(HttpStatus.NOT_FOUND);
+        }
+        // update currentUser object data with user object data
+        currentUser.get().setImgPerfil(photos.getImgPerfil());
+        currentUser.get().setImgPortada(photos.getImgPortada());
         // save currentUser object
         personaRepository.saveAndFlush(currentUser.get());
         //return ResponseEntity object
