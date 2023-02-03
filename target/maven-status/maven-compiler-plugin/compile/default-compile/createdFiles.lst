@@ -10,6 +10,7 @@ com\portfolio\portfolio\Model\Educacion.class
 com\portfolio\portfolio\dto\AuthResponseDto.class
 com\portfolio\portfolio\Model\Skill.class
 com\portfolio\portfolio\Controller\SkillController.class
+com\portfolio\portfolio\Controller\Enviroment.class
 com\portfolio\portfolio\Model\Proyecto.class
 com\portfolio\portfolio\Repository\PersonaRepository.class
 com\portfolio\portfolio\Controller\AuthController.class

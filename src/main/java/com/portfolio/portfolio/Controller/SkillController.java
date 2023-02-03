@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins ={"http://localhost:5000", "http://localhost:4200"})
+@CrossOrigin(origins = Enviroment.URL)
 @RequestMapping("/api/persona")
 public class SkillController {
     @Autowired

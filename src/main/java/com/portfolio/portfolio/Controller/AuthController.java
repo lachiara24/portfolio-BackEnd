@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5000", "http://localhost:4200"})
+@CrossOrigin(origins = Enviroment.URL)
 @RequestMapping("/api/auth")
 public class AuthController {
 
